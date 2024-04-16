@@ -1,0 +1,3 @@
+set logscale
+pl "result_intel_openblas.dat" using 1:2 title "openblas" w lp ,"result_intel_mkl.dat" using 1:2 title "mkl" w
+lp
