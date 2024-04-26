@@ -7,13 +7,13 @@
 *	attention:
 *
 *	history:
-*		2024/04/13:K.Yamada :create file
+*		2024/04/26:K.Yamada :create file
 */
 /*****************************************************************************/
 /*****************************************************************************/
 /*                         include headerfile                                */
 /*****************************************************************************/
-//standard library
+/*standard library*/
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -51,24 +51,29 @@
 int main(uint64_t argc, char const *argv[])
 {
 	uint32_t m, n, k;
-	uint32_t size;
 	double *a, *b, *c;
 	double alpha, beta;
 	uint32_t lda, ldb, ldc;
-	struct timespec ts1, ts2;
+	struct timespec startTime, endTime;
 
-	FILE *fp;
-	if( (fp = fopen( "build/result.csv", "w" )) == NULL)
+	if(argv[1] == NULL)
 	{
-		printf("can not open file.\r\n");
+		printf("Error:not command line argument\r\n");
 		return -1;
 	}
 
-	for(size = 10;size < 100; size += 10)
+	FILE *fp;
+	if( (fp = fopen( argv[1], "w" )) == NULL)
 	{
-		m = size;
-		n = size;
-		k = size;
+		printf("can not open file.\r\n");
+		return -2;
+	}
+
+	for(int32_t i = 0 ; i < 9; i ++)
+	{
+		m = (i + 1) * 10;
+		n = (i + 1) * 10;
+		k = (i + 1) * 10;
 
 		a = (double *)malloc(sizeof(double) * m * k); // m x k matrix
 		b = (double *)malloc(sizeof(double) * k * n); // k x n matrix
@@ -104,23 +109,23 @@ int main(uint64_t argc, char const *argv[])
 		ldb = k; 
 		ldc = m; 
 
-		clock_gettime(CLOCK_REALTIME, &ts1);
+		clock_gettime(CLOCK_REALTIME, &startTime);
 		dgemm_("N", "N", &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc);
-		clock_gettime(CLOCK_REALTIME, &ts2);
+		clock_gettime(CLOCK_REALTIME, &endTime);
 
-		printf("%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
-		fprintf(fp, "%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
+		fprintf(stderr, "%6d, %.10f\r", (i + 1) * 10, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+		fprintf(fp, "%6d, %.10f\n", (i + 1) * 10, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
 
 		free(a);
 		free(b);
 		free(c);
 	}
 
-	for(size = 100;size < 1000; size += 100)
+	for(int32_t i = 0 ; i < 9; i ++)
 	{
-		m = size;
-		n = size;
-		k = size;
+		m = (i + 1) * 100;
+		n = (i + 1) * 100;
+		k = (i + 1) * 100;
 
 		a = (double *)malloc(sizeof(double) * m * k); // m x k matrix
 		b = (double *)malloc(sizeof(double) * k * n); // k x n matrix
@@ -156,23 +161,23 @@ int main(uint64_t argc, char const *argv[])
 		ldb = k; 
 		ldc = m; 
 
-		clock_gettime(CLOCK_REALTIME, &ts1);
+		clock_gettime(CLOCK_REALTIME, &startTime);
 		dgemm_("N", "N", &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc);
-		clock_gettime(CLOCK_REALTIME, &ts2);
+		clock_gettime(CLOCK_REALTIME, &endTime);
 
-		printf("%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
-		fprintf(fp, "%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
+		fprintf(stderr, "%6d, %.10f\r", (i + 1) * 100, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+		fprintf(fp, "%6d, %.10f\n", (i + 1) * 100, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
 
 		free(a);
 		free(b);
 		free(c);
 	}
 
-	for(size = 1000;size < 10000+1; size += 1000)
+	for(int32_t i = 0 ; i < 10; i ++)
 	{
-		m = size;
-		n = size;
-		k = size;
+		m = (i + 1) * 1000;
+		n = (i + 1) * 1000;
+		k = (i + 1) * 1000;
 
 		a = (double *)malloc(sizeof(double) * m * k); // m x k matrix
 		b = (double *)malloc(sizeof(double) * k * n); // k x n matrix
@@ -208,18 +213,19 @@ int main(uint64_t argc, char const *argv[])
 		ldb = k; 
 		ldc = m; 
 
-		clock_gettime(CLOCK_REALTIME, &ts1);
+		clock_gettime(CLOCK_REALTIME, &startTime);
 		dgemm_("N", "N", &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc);
-		clock_gettime(CLOCK_REALTIME, &ts2);
+		clock_gettime(CLOCK_REALTIME, &endTime);
 
-		printf("%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
-		fprintf(fp, "%6d,%.10f\n", size, (ts2.tv_sec - ts1.tv_sec) + (ts2.tv_nsec - ts1.tv_nsec) / 1e9);
+		fprintf(stderr, "%6d, %.10f\r", (i + 1) * 1000, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+		fprintf(fp, "%6d, %.10f\n", (i + 1) * 1000, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
 
 		free(a);
 		free(b);
 		free(c);
 	}
 
+	printf("\nFinish!\r\n");
 
 	fclose(fp);
 

@@ -13,7 +13,7 @@
 /*****************************************************************************/
 /*                         include headerfile                                */
 /*****************************************************************************/
-//standard library
+/*standard library*/
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -57,57 +57,75 @@ int main(uint64_t argc, char const* argv[])
 	double j,total;
 	struct timespec startTime, endTime;
 
+	if(argv[1] == NULL)
+	{
+		printf("Error:not command line argument\r\n");
+		return -1;
+	}
+
 	n = omp_get_max_threads(); 
 
 	printf("max threads (set): %ld\r\n", n);
 
 	FILE *fp;
-	if( (fp = fopen( "build/result.csv", "w" )) == NULL)
+	if( (fp = fopen( argv[1], "w" )) == NULL)
 	{
 		printf("can not open file.\r\n");
-		return -1;
+		return -2;
 	}
 
-	for(L = 10 ; L < pow(10,12) ; L *= 10)
+	L = pow(10,10);
+
+	for(uint64_t core_num = 1 ; core_num < n ; core_num *= 2)
 	{
 		printf("L=%ld\r\n",L);
 		total = 0;
 
 		clock_gettime(CLOCK_REALTIME, &startTime);
 
-		#pragma omp parallel for private(j) reduction(+:total) num_threads(n)
+		#pragma omp parallel for private(j) reduction(+:total) num_threads(core_num)
 		for (i = 0; i < L; i++)
 		{
-			j = 2*i + 1;
-			j = 1/j;
+			j = 2 * i + 1;
+			j = 1.0 / j;
 			if(i % 2 == 1) j *= -1;
 			total += j;
 		}
 
 		clock_gettime(CLOCK_REALTIME, &endTime);
 
-		printf("elapsed time = ");
-		if (endTime.tv_nsec < startTime.tv_nsec)
-		{
-			printf("%5ld.%09ld", endTime.tv_sec - startTime.tv_sec - 1,
-			endTime.tv_nsec + (long int)1.0e+9 - startTime.tv_nsec);
-			fprintf(fp, "%15ld,%5ld.%10ld,%.20lf\r\n", L,
-			endTime.tv_sec - startTime.tv_sec - 1,
-			endTime.tv_nsec + (long int)1.0e+9 - startTime.tv_nsec, total);
-		}else
-		{
-			printf("%5ld.%09ld", endTime.tv_sec - startTime.tv_sec,
-			endTime.tv_nsec - startTime.tv_nsec);
-			fprintf(fp, "%15ld,%5ld.%10ld,%.20lf\r\n", L,
-			endTime.tv_sec - startTime.tv_sec,
-			endTime.tv_nsec - startTime.tv_nsec, total);
-		}
-		printf("(sec)\r\n");
+		fprintf(fp, "%4ld, %.10lf\r\n", core_num, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
 
-		printf("result : %.20lf\r\n", total * 4);
+		fprintf(stderr, "threads(%4ld) ,elapsed time = %.10lf(sec)\r\n", core_num, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+		fprintf(stderr, "result : %.20lf\r\n", total * 4);
+		fprintf(stderr, "\033[3F");
 
 	}
 	
+	printf("L=%ld\r\n",L);
+	total = 0;
+
+	clock_gettime(CLOCK_REALTIME, &startTime);
+
+	#pragma omp parallel for private(j) reduction(+:total) num_threads(n)
+	for (i = 0; i < L; i++)
+	{
+		j = 2 * i + 1;
+		j = 1.0 / j;
+		if(i % 2 == 1) j *= -1;
+		total += j;
+	}
+
+	clock_gettime(CLOCK_REALTIME, &endTime);
+
+	fprintf(fp, "%4ld, %.10lf\r\n", n, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+
+	printf("threads(%4ld) ,elapsed time = %.10lf(sec)\r\n", n, (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_nsec - startTime.tv_nsec) / 1e9);
+
+	printf("result : %.20lf\r\n", total * 4);
+
+	printf("Finish!\r\n");
+
 	fclose(fp);
 	
 	return 0;

@@ -1,40 +1,37 @@
 /*****************************************************************************/
 /*
-*	filename:calculate1.c
+*	filename:calculate.c
 *	about:
-*		calculate function 1
+*		calculate function
 *
-*	attention:
+*	caution:
 *
 *	history:
-*		2024/04/13:K.Yamada :create file
+*		2024/04/26:K.Yamada :create file
 */
 /*****************************************************************************/
 /*****************************************************************************/
 /*                         include headerfile                                */
 /*****************************************************************************/
-//standard library
-#include <stdlib.h>
+/*standard library*/
 #include <stdint.h>
 
-#include <calculate1.h>
+#include <calculate.h>
 
 /*****************************************************************************/
 /*                               define const                                */
 /*****************************************************************************/
-#ifdef __cplusplus
-extern "C" {
-#endif /*__cplusplus*/
+/*none*/
 
 /*****************************************************************************/
 /*                         define variable (global)                          */
 /*****************************************************************************/
-//none
+/*none*/
 
 /*****************************************************************************/
 /*                         define structure (global)                         */
 /*****************************************************************************/
-//none
+/*none*/
 
 /*****************************************************************************/
 /*                                 define function                           */
@@ -44,22 +41,22 @@ extern "C" {
 *	about:
 *		calculate Fibonacci number
 *
-*	attention:
+*	caution:
 *		define Fibonacci(0)=0,Fibonacci(1)=1.
 *
 *	in	int64_t		n		:Fibonacci number index
 *	out	int64_t				:calculate answer
 */
-	uint64_t Fibonacci(uint64_t n)
+uint64_t Fibonacci(uint64_t n)
+{
+	if(n == 0)
 	{
-		if(n == 0)
-			return 0;
-		if(n == 1)
-			return 1;
-
-		return Fibonacci(n-1) + Fibonacci(n-2);
+		return 0;
+	}
+	else if(n == 1)
+	{
+		return 1;
 	}
 
-#ifdef __cplusplus
+	return Fibonacci(n - 1) + Fibonacci(n - 2);
 }
-#endif /*__cplusplus*/

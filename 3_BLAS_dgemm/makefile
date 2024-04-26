@@ -10,11 +10,11 @@ RM := rm -rf
 CFLAGS := -O1 -Iinclude
 CPPFLAGS :=
 LDFLAGS :=
-LDLIBS :=
+LDLIBS := -lblas
 
 # Variables Used by My Rules
-PROJECTNAME := Fibonacci
-LIBRARYNAME := fibonacci
+PROJECTNAME := BLAS
+LIBRARYNAME := sampleblas
 OUTDIR := ./build
 BINDIR := ./bin
 INCDIR := ./include
@@ -81,6 +81,13 @@ inspect : lib$(LIBRARYNAME).a
 	nm lib$(LIBRARYNAME).a
 	@echo ""
 
+switch :
+	@echo "Switch to Library (BLAS,LAPACK)"
+	@sudo update-alternatives --config libblas.so-x86_64-linux-gnu
+	@sudo update-alternatives --config libblas.so.3-x86_64-linux-gnu
+	@sudo update-alternatives --config liblapack.so-x86_64-linux-gnu
+	@sudo update-alternatives --config liblapack.so.3-x86_64-linux-gnu
+
 .PHONY: plot
 plot : $(RESULTFILENAME)
 	./Plot.sh $<
@@ -95,5 +102,5 @@ help :
 	@echo "      debug : "
 	@echo "        lib : "
 	@echo "    inspect : "
-	@echo "       plot : "
+	@echo "     switch : Switch to Library"
 	@echo "       help : This"

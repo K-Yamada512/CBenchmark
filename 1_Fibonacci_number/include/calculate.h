@@ -1,49 +1,43 @@
 /*****************************************************************************/
 /*
-*	filename:calculate1.h
+*	filename:calculate.h
 *	about:
-*		calculate function 1 headerfile
+*		calculate function headerfile
 *
-*	attention:
+*	caution:
 *
 *	history:
-*		2024/04/13:K.Yamada :create file
+*		2024/04/19:K.Yamada :create file
 */
 /*****************************************************************************/
-#ifndef _INCLUDE_GUARD_CALCULATE1_H_
-#define _INCLUDE_GUARD_CALCULATE1_H_
+#ifndef _INCLUDE_GUARD_CALCULATE_H_
+#define _INCLUDE_GUARD_CALCULATE_H_
 
 /*****************************************************************************/
 /*                         include headerfile                                */
 /*****************************************************************************/
-//standard library
+/*standard library*/
 #include <stdint.h>
 
 /*****************************************************************************/
 /*                               define const                                */
 /*****************************************************************************/
-#ifdef __cplusplus
-extern "C" {
-#endif /*__cplusplus*/
+/*none*/
 
 /*****************************************************************************/
 /*                         define variable (global)                          */
 /*****************************************************************************/
-//none
+/*none*/
 
 /*****************************************************************************/
 /*                         define structure (global)                         */
 /*****************************************************************************/
-//none
+/*none*/
 
 /*****************************************************************************/
 /*                                 define function                           */
 /*****************************************************************************/
-	// Fibonacci number
-	uint64_t Fibonacci(uint64_t n);
+/*Fibonacci number*/
+uint64_t Fibonacci(uint64_t n);
 
-#ifdef __cplusplus
-}
-#endif /*__cplusplus*/
-
-#endif /*_INCLUDE_GUARD_CALCULATE1_H_*/
+#endif /*_INCLUDE_GUARD_CALCULATE_H_*/
