@@ -28,12 +28,16 @@ Plot.sh：
 README.md：  
 
 ### スレッド並列処理（OpenMP）
-以下の式を計算させる  
+以下の式を計算させる
+
+
 $$
 \begin{align*}
 \lim_{n \rightarrow \infty} \sum_{m=0}^n \frac{{(-1)}^m}{2m + 1} = \frac{\pi}{4}\\
 \end{align*}
 $$
+
+
 ```C
 /*standard library*/
 #include <omp.h>
